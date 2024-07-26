@@ -15,6 +15,7 @@ Once Helm is set up properly, add the repo as follows:
 helm repo add openyurt https://openyurtio.github.io/charts
 ```
 
+If you have already added this repo earlier, run `helm repo update` to retrieve the latest versions of the packages.
 You can then run `helm search repo openyurt` to see the charts.
 
 ### Install `yurt-manager`
