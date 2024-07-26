@@ -1,0 +1,47 @@
+apiVersion: v1
+entries:
+  yurt-coordinator:
+  - apiVersion: v2
+    appVersion: v1.5.0
+    created: "2024-07-26T07:40:43.828177591Z"
+    description: A Helm chart for OpenYurt yurt-coordinator component
+    digest: 0507afe0aeba464490eeb6b0581fc47a8c1f5909b7a659bd07e3a6a5d59e3f80
+    name: yurt-coordinator
+    type: application
+    urls:
+    - https://github.com/openyurtio/charts/releases/download/yurt-coordinator-1.5.0/yurt-coordinator-1.5.0.tgz
+    version: 1.5.0
+  yurt-iot-dock:
+  - apiVersion: v2
+    appVersion: v1.5.0
+    created: "2024-07-26T07:40:44.013670875Z"
+    description: A Helm chart for OpenYurt yurt-iot-dock component.
+    digest: 2188b63f5c01a8ac8d03ac3cb51fba9825fc2c50cb245fa0b95d79b6eda1459d
+    name: yurt-iot-dock
+    type: application
+    urls:
+    - https://github.com/openyurtio/charts/releases/download/yurt-iot-dock-1.5.0/yurt-iot-dock-1.5.0.tgz
+    version: 1.5.0
+  yurt-manager:
+  - apiVersion: v2
+    appVersion: v1.5.0
+    created: "2024-07-26T07:40:44.208315991Z"
+    description: A Helm chart for OpenYurt yurt-manager component.
+    digest: 0a31c6e06d30a263c0f9cc058b37590aae7192568794896980006d828d218995
+    name: yurt-manager
+    type: application
+    urls:
+    - https://github.com/openyurtio/charts/releases/download/yurt-manager-1.5.0/yurt-manager-1.5.0.tgz
+    version: 1.5.0
+  yurthub:
+  - apiVersion: v2
+    appVersion: v1.5.0
+    created: "2024-07-26T07:40:44.378113192Z"
+    description: A Helm chart for OpenYurt YurtHub Component
+    digest: f6856d81598637aee7445c303524a5e3b9eab731f6069ec8f1a9be9e6c234819
+    name: yurthub
+    type: application
+    urls:
+    - https://github.com/openyurtio/charts/releases/download/yurthub-1.5.0/yurthub-1.5.0.tgz
+    version: 1.5.0
+generated: "2024-07-26T07:40:44.37813856Z"
