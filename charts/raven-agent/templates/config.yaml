@@ -1,0 +1,32 @@
+apiVersion: v1
+data:
+  enable-l3-tunnel: {{.Values.controller.enableTunnel | quote}}
+  enable-l7-proxy: {{.Values.controller.enableProxy | quote}}
+kind: ConfigMap
+metadata:
+  name: raven-cfg
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: v1
+data:
+  vpn-driver: {{ .Values.vpn.driver }}
+  forward-node-ip: {{ .Values.vpn.forwardNodeIP | quote }}
+  nat-traversal: {{ .Values.vpn.natTraversal | quote }}
+  metric-bind-addr: {{ .Values.vpn.metricBindAddr }}
+  tunnel-bind-addr: {{ .Values.vpn.tunnelAddr }}
+  proxy-external-addr: {{ .Values.proxy.externalAddr }}
+  proxy-internal-insecure-addr: {{ .Values.proxy.internalInsecureAddr }}
+  proxy-internal-secure-addr: {{ .Values.proxy.internalSecureAddr }}
+kind: ConfigMap
+metadata:
+  name: raven-agent-config
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: v1
+data:
+  vpn-connection-psk: {{ .Values.vpn.psk | b64enc }}
+kind: Secret
+metadata:
+  name: raven-agent-secret
+  namespace: {{ .Release.Namespace }}
+type: Opaque
