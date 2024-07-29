@@ -1,5 +1,16 @@
 apiVersion: v1
 entries:
+  raven-agent:
+  - apiVersion: v2
+    appVersion: 0.4.2
+    created: "2024-07-29T06:44:26.682303514Z"
+    description: A Helm chart for Kubernetes
+    digest: ae7ebf6155b3a1912a5eb936995a921aeead73fa019491e60eb23b8e28d58ecf
+    name: raven-agent
+    type: application
+    urls:
+    - https://github.com/openyurtio/charts/releases/download/raven-agent-0.4.2/raven-agent-0.4.2.tgz
+    version: 0.4.2
   yurt-coordinator:
   - apiVersion: v2
     appVersion: v1.5.0
@@ -44,4 +55,4 @@ entries:
     urls:
     - https://github.com/openyurtio/charts/releases/download/yurthub-1.5.0/yurthub-1.5.0.tgz
     version: 1.5.0
-generated: "2024-07-26T07:40:44.37813856Z"
+generated: "2024-07-29T06:44:26.682309735Z"
