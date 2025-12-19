@@ -8,7 +8,7 @@ spec:
   group: apps.openyurt.io
   names:
     categories:
-    - yurt
+    - all
     kind: NodeBucket
     listKind: NodeBucketList
     plural: nodebuckets

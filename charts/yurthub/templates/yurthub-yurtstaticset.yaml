@@ -36,7 +36,6 @@ spec:
             - --bind-address={{ .Values.yurthubBindingAddr }}
             - --server-addr={{ .Values.kubernetesServerAddr }}
             - --node-name=$(NODE_NAME)
-            - --nodepool-name={{ .Values.nodePoolName }}
             - --bootstrap-file={{ .Values.bootstrapFile }}
             - --working-mode=edge
             - --namespace={{ .Release.Namespace }}
@@ -59,8 +58,8 @@ spec:
               host: {{ .Values.yurthubBindingAddr }}
               path: /v1/readyz
               port: 10267
-            initialDelaySeconds: 30
-            periodSeconds: 15
+            initialDelaySeconds: 120
+            periodSeconds: 20
             failureThreshold: 3
           resources:
             requests:

@@ -21,6 +21,12 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  name: yurt-manager-delegate-lease-controller
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
   name: yurt-manager-gateway-dns-controller
   namespace: {{ .Release.Namespace }}
 ---
@@ -40,24 +46,6 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: yurt-manager-gateway-public-service-controller
-  namespace: {{ .Release.Namespace }}
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: yurt-manager-hubleader-controller
-  namespace: {{ .Release.Namespace }}
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: yurt-manager-hubleaderconfig-controller
-  namespace: {{ .Release.Namespace }}
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: yurt-manager-hubleaderrbac-controller
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: v1
@@ -111,7 +99,25 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  name: yurt-manager-yurt-app-daemon-controller
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: yurt-manager-yurt-app-overrider-controller
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
   name: yurt-manager-yurt-app-set-controller
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: yurt-manager-yurt-coordinator-cert-controller
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: v1
@@ -194,6 +200,7 @@ rules:
   - nodebuckets
   - nodepools
   - yurtappdaemons
+  - yurtappoverriders
   - yurtappsets
   - yurtstaticsets
   verbs:
@@ -259,13 +266,6 @@ rules:
   verbs:
   - list
   - watch
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
-  - clusterroles
-  verbs:
-  - list
-  - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -317,19 +317,31 @@ rules:
   - patch
   - update
 - apiGroups:
-  - ""
-  resources:
-  - pods/status
-  verbs:
-  - patch
-  - update
-- apiGroups:
   - apps
   resources:
   - daemonsets
   verbs:
   - get
   - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: yurt-manager-delegate-lease-controller
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
+  - update
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -456,64 +468,6 @@ rules:
   - gateways
   verbs:
   - get
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: yurt-manager-hubleader-controller
-rules:
-- apiGroups:
-  - apps.openyurt.io
-  resources:
-  - nodepools
-  - nodepools/status
-  verbs:
-  - get
-  - patch
-  - update
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: yurt-manager-hubleaderconfig-controller
-rules:
-- apiGroups:
-  - ""
-  resources:
-  - configmaps
-  verbs:
-  - create
-  - get
-  - patch
-  - update
-- apiGroups:
-  - apps.openyurt.io
-  resources:
-  - nodepools
-  - nodepools/status
-  verbs:
-  - get
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: yurt-manager-hubleaderrbac-controller
-rules:
-- apiGroups:
-  - apps.openyurt.io
-  resources:
-  - nodepools
-  verbs:
-  - get
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
-  - clusterroles
-  verbs:
-  - create
-  - escalate
-  - get
-  - update
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -793,6 +747,69 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  name: yurt-manager-yurt-app-daemon-controller
+rules:
+- apiGroups:
+  - apps
+  resources:
+  - controllerrevisions
+  - deployments
+  verbs:
+  - create
+  - delete
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apps
+  resources:
+  - deployments/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apps.openyurt.io
+  resources:
+  - yurtappdaemons
+  verbs:
+  - create
+  - delete
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apps.openyurt.io
+  resources:
+  - yurtappdaemons/status
+  verbs:
+  - get
+  - patch
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: yurt-manager-yurt-app-overrider-controller
+rules:
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - update
+- apiGroups:
+  - apps.openyurt.io
+  resources:
+  - yurtappdaemons
+  - yurtappoverriders
+  - yurtappsets
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
   name: yurt-manager-yurt-app-set-controller
 rules:
 - apiGroups:
@@ -840,6 +857,34 @@ rules:
   - get
   - patch
   - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: yurt-manager-yurt-coordinator-cert-controller
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - services
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - get
+  - patch
+  - update
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests
+  verbs:
+  - create
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -926,6 +971,19 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  name: yurt-manager-delegate-lease-controller-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: yurt-manager-delegate-lease-controller
+subjects:
+- kind: ServiceAccount
+  name: yurt-manager-delegate-lease-controller
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
   name: yurt-manager-gateway-dns-controller-binding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -973,45 +1031,6 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: yurt-manager-gateway-public-service-controller
-  namespace: {{ .Release.Namespace }}
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: yurt-manager-hubleader-controller-binding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: yurt-manager-hubleader-controller
-subjects:
-- kind: ServiceAccount
-  name: yurt-manager-hubleader-controller
-  namespace: {{ .Release.Namespace }}
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: yurt-manager-hubleaderconfig-controller-binding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: yurt-manager-hubleaderconfig-controller
-subjects:
-- kind: ServiceAccount
-  name: yurt-manager-hubleaderconfig-controller
-  namespace: {{ .Release.Namespace }}
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: yurt-manager-hubleaderrbac-controller-binding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: yurt-manager-hubleaderrbac-controller
-subjects:
-- kind: ServiceAccount
-  name: yurt-manager-hubleaderrbac-controller
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -1121,6 +1140,32 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  name: yurt-manager-yurt-app-daemon-controller-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: yurt-manager-yurt-app-daemon-controller
+subjects:
+- kind: ServiceAccount
+  name: yurt-manager-yurt-app-daemon-controller
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: yurt-manager-yurt-app-overrider-controller-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: yurt-manager-yurt-app-overrider-controller
+subjects:
+- kind: ServiceAccount
+  name: yurt-manager-yurt-app-overrider-controller
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
   name: yurt-manager-yurt-app-set-controller-binding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -1129,6 +1174,19 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: yurt-manager-yurt-app-set-controller
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: yurt-manager-yurt-coordinator-cert-controller-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: yurt-manager-yurt-coordinator-cert-controller
+subjects:
+- kind: ServiceAccount
+  name: yurt-manager-yurt-coordinator-cert-controller
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -1149,6 +1207,26 @@ kind: MutatingWebhookConfiguration
 metadata:
   name: yurt-manager-mutating-webhook-configuration
 webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: yurt-manager-webhook-service
+      namespace: {{ .Release.Namespace }}
+      path: /mutate-apps-v1-deployment
+  failurePolicy: Ignore
+  name: mutate.apps.v1.deployment
+  rules:
+  - apiGroups:
+    - apps
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - deployments
+  sideEffects: None
 - admissionReviewVersions:
   - v1
   clientConfig:
@@ -1230,19 +1308,19 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  - v1beta2
+  - v1beta1
   clientConfig:
     service:
       name: yurt-manager-webhook-service
       namespace: {{ .Release.Namespace }}
-      path: /mutate-apps-openyurt-io-v1beta2-nodepool
+      path: /mutate-apps-openyurt-io-v1beta1-nodepool
   failurePolicy: Fail
-  name: m.v1beta2.nodepool.kb.io
+  name: m.v1beta1.nodepool.kb.io
   rules:
   - apiGroups:
     - apps.openyurt.io
     apiVersions:
-    - v1beta2
+    - v1beta1
     operations:
     - CREATE
     resources:
@@ -1267,6 +1345,48 @@ webhooks:
     - CREATE
     resources:
     - pods
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    service:
+      name: yurt-manager-webhook-service
+      namespace: {{ .Release.Namespace }}
+      path: /mutate-apps-openyurt-io-v1alpha1-yurtappdaemon
+  failurePolicy: Fail
+  name: mutate.apps.v1alpha1.yurtappdaemon.openyurt.io
+  rules:
+  - apiGroups:
+    - apps.openyurt.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - yurtappdaemons
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    service:
+      name: yurt-manager-webhook-service
+      namespace: {{ .Release.Namespace }}
+      path: /mutate-apps-openyurt-io-v1alpha1-yurtappoverrider
+  failurePolicy: Fail
+  name: mutate.apps.v1alpha1.yurtappoverrider.openyurt.io
+  rules:
+  - apiGroups:
+    - apps.openyurt.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - yurtappoverriders
   sideEffects: None
 - admissionReviewVersions:
   - v1
@@ -1378,25 +1498,68 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  - v1beta2
+  - v1beta1
   clientConfig:
     service:
       name: yurt-manager-webhook-service
       namespace: {{ .Release.Namespace }}
-      path: /validate-apps-openyurt-io-v1beta2-nodepool
+      path: /validate-apps-openyurt-io-v1beta1-nodepool
   failurePolicy: Fail
-  name: v.v1beta2.nodepool.kb.io
+  name: v.v1beta1.nodepool.kb.io
   rules:
   - apiGroups:
     - apps.openyurt.io
     apiVersions:
-    - v1beta2
+    - v1beta1
     operations:
     - CREATE
     - UPDATE
     - DELETE
     resources:
     - nodepools
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    service:
+      name: yurt-manager-webhook-service
+      namespace: {{ .Release.Namespace }}
+      path: /validate-apps-openyurt-io-v1alpha1-yurtappdaemon
+  failurePolicy: Fail
+  name: validate.apps.v1alpha1.yurtappdaemon.openyurt.io
+  rules:
+  - apiGroups:
+    - apps.openyurt.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - yurtappdaemons
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    service:
+      name: yurt-manager-webhook-service
+      namespace: {{ .Release.Namespace }}
+      path: /validate-apps-openyurt-io-v1alpha1-yurtappoverrider
+  failurePolicy: Fail
+  name: validate.apps.v1alpha1.yurtappoverrider.openyurt.io
+  rules:
+  - apiGroups:
+    - apps.openyurt.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    - DELETE
+    resources:
+    - yurtappoverriders
   sideEffects: None
 - admissionReviewVersions:
   - v1
