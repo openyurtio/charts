@@ -31,6 +31,9 @@ disableIndependentWebhooks: ""
 
 leaderElectResourceName: "cloud-yurt-manager"
 
+# support extra args of yurt-manager cmd
+extraArgs: []
+
 # resources of yurt-manager container
 resources:
   limits:
