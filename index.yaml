@@ -44,6 +44,16 @@ entries:
     version: 1.5.0
   yurt-iot-dock:
   - apiVersion: v2
+    appVersion: v1.7.0
+    created: "2026-05-06T07:39:42.958842333Z"
+    description: A Helm chart for OpenYurt yurt-iot-dock component.
+    digest: 2e5568debd00358c34e8c9033181d543ab0cf36660421ff3b3bc3b6b36e3c128
+    name: yurt-iot-dock
+    type: application
+    urls:
+    - https://github.com/openyurtio/charts/releases/download/yurt-iot-dock-1.7.0/yurt-iot-dock-1.7.0.tgz
+    version: 1.7.0
+  - apiVersion: v2
     appVersion: v1.6.1
     created: "2025-12-01T09:29:56.347301815Z"
     description: A Helm chart for OpenYurt yurt-iot-dock component.
@@ -74,6 +84,16 @@ entries:
     - https://github.com/openyurtio/charts/releases/download/yurt-iot-dock-1.5.0/yurt-iot-dock-1.5.0.tgz
     version: 1.5.0
   yurt-manager:
+  - apiVersion: v2
+    appVersion: v1.7.0
+    created: "2026-05-06T07:39:43.205240317Z"
+    description: A Helm chart for OpenYurt yurt-manager component.
+    digest: 25da25baf1d23943ce35e5fdc3e012027fd91845cbc2524d50a71955542a43d6
+    name: yurt-manager
+    type: application
+    urls:
+    - https://github.com/openyurtio/charts/releases/download/yurt-manager-1.7.0/yurt-manager-1.7.0.tgz
+    version: 1.7.0
   - apiVersion: v2
     appVersion: v1.6.1
     created: "2025-12-01T09:29:56.536387298Z"
@@ -106,6 +126,16 @@ entries:
     version: 1.5.0
   yurthub:
   - apiVersion: v2
+    appVersion: v1.7.0
+    created: "2026-05-06T07:39:43.400925637Z"
+    description: A Helm chart for OpenYurt YurtHub Component
+    digest: fed671dce0bee9fc251d3c298ff379e360a2c023081b64a3b4c34a16124f1483
+    name: yurthub
+    type: application
+    urls:
+    - https://github.com/openyurtio/charts/releases/download/yurthub-1.7.0/yurthub-1.7.0.tgz
+    version: 1.7.0
+  - apiVersion: v2
     appVersion: v1.6.1
     created: "2025-12-01T09:29:56.770499094Z"
     description: A Helm chart for OpenYurt YurtHub Component
@@ -135,4 +165,4 @@ entries:
     urls:
     - https://github.com/openyurtio/charts/releases/download/yurthub-1.5.0/yurthub-1.5.0.tgz
     version: 1.5.0
-generated: "2025-12-01T09:29:56.770531737Z"
+generated: "2026-05-06T07:39:43.400987813Z"
